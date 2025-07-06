@@ -1,0 +1,18 @@
+# render.yaml
+# Configuration for deploying the Audio Transcriber app on Render.
+
+services:
+  - type: web
+    name: audio-transcriber
+    env: node
+    plan: free # Specifies the free instance type
+    buildCommand: "npm install"
+    startCommand: "node server.js"
+    healthCheckPath: "/"
+    builds:
+      - "ffmpeg"
+    envVars:
+      - key: NODE_VERSION
+        value: 18 # Specify a recent Node.js version
+      - key: OPENAI_API_KEY
+        sync: false # Do not sync this from the repo, set it in the dashboard
