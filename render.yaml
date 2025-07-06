@@ -1,17 +1,13 @@
 # render.yaml
-# Corrected configuration for deploying the Audio Transcriber app on Render.
+# Final configuration for deploying the Audio Transcriber app on Render using Docker.
 
 services:
   - type: web
     name: audio-transcriber
-    env: node
-    plan: free # Specifies the free instance type
-    buildCommand: "npm install"
-    startCommand: "node server.js"
+    env: docker # Specify Docker as the environment
+    plan: free # Use the free instance type
     healthCheckPath: "/"
-    aptPackages:
-      - ffmpeg
-    envVars:
-      - key: NODE_VERSION
-        value: "18.17.1" # Using a specific, stable Node.js version
+    # The Dockerfile is in the root, so Render will find it automatically.
+    # Build and start commands are now handled by the Dockerfile.
+    # Environment variables like OPENAI_API_KEY should still be set in the Render dashboard.
 
