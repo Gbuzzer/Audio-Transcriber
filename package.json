@@ -5,7 +5,11 @@
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
-    "dev": "nodemon server.js"
+    "dev": "nodemon server.js",
+    "build": "node scripts/version-update.js",
+    "version-bump:patch": "node -e \"const fs=require('fs');const v=JSON.parse(fs.readFileSync('./version.json'));v.patch++;v.build=1;fs.writeFileSync('./version.json',JSON.stringify(v,null,2));\"",
+    "version-bump:minor": "node -e \"const fs=require('fs');const v=JSON.parse(fs.readFileSync('./version.json'));v.minor++;v.patch=0;v.build=1;fs.writeFileSync('./version.json',JSON.stringify(v,null,2));\"",
+    "version-bump:major": "node -e \"const fs=require('fs');const v=JSON.parse(fs.readFileSync('./version.json'));v.major++;v.minor=0;v.patch=0;v.build=1;fs.writeFileSync('./version.json',JSON.stringify(v,null,2));\""
   },
   "dependencies": {
     "@ffmpeg-installer/ffmpeg": "^1.1.0",

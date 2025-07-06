@@ -3,6 +3,7 @@ const express = require('express');
 const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
+const versionInfo = require('./version-info');
 const cors = require('cors');
 const { OpenAI } = require('openai');
 const ffmpeg = require('fluent-ffmpeg');
@@ -21,6 +22,11 @@ const PORT = process.env.PORT || 3000;
 app.use(cors());
 app.use(express.json());
 app.use(express.static('public'));
+
+// Add version info route
+app.get('/api/version', (req, res) => {
+  res.json(versionInfo);
+});
 
 // Create directories if they don't exist
 const uploadDir = path.join(__dirname, 'uploads');
@@ -285,5 +291,6 @@ async function handleLargeFile(req, res) {
 }
 
 app.listen(PORT, () => {
+  console.log(`Audio Transcriber ${versionInfo.fullVersion}`);
   console.log(`Server is running on http://localhost:${PORT}`);
 });

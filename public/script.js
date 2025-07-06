@@ -1,4 +1,8 @@
 document.addEventListener('DOMContentLoaded', () => {
+    // Fetch version information
+    fetchVersionInfo();
+    
+
     // Elements
     const uploadArea = document.getElementById('upload-area');
     const fileInput = document.getElementById('file-input');
@@ -323,5 +327,21 @@ document.addEventListener('DOMContentLoaded', () => {
     // Dismiss notification when close button is clicked
     function dismissNotification() {
         notification.classList.remove('show');
+    }
+    
+    // Function to fetch version information
+    async function fetchVersionInfo() {
+        try {
+            const response = await fetch('/api/version');
+            if (response.ok) {
+                const versionData = await response.json();
+                const versionDisplay = document.getElementById('version-display');
+                if (versionDisplay) {
+                    versionDisplay.textContent = `Version ${versionData.version} (Build ${versionData.build})`;
+                }
+            }
+        } catch (error) {
+            console.error('Error fetching version info:', error);
+        }
     }
 });
