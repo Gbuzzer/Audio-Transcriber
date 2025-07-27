@@ -21,7 +21,7 @@
                     <h2>Upload Audio File</h2>
                     <p>Drag and drop your audio file here or click to browse</p>
                     <p class="supported-formats">Supported formats: MP3, WAV, M4A, OGG, FLAC</p>
-                    <p class="file-size-info"><strong>Note:</strong> While you can upload files up to 100MB, OpenAI's Whisper API has a 25MB limit.</p>
+                    <p class="file-size-info"><strong>Smart Processing:</strong> Files up to 300MB supported. Large files are intelligently chunked to ~20MB segments for optimal performance and rate limits.</p>
                 </div>
                 <input type="file" id="file-input" accept="audio/*" hidden>
             </div>
@@ -45,9 +45,17 @@
                 <h2>Transcription Result</h2>
                 <div class="result-actions">
                     <button id="copy-btn"><i class="fas fa-copy"></i> Copy</button>
-                    <button id="download-btn"><i class="fas fa-download"></i> Download</button>
+                    <button id="download-btn"><i class="fas fa-download"></i> TXT</button>
+                    <button id="download-word-btn"><i class="fas fa-file-word"></i> Word</button>
                 </div>
                 <div class="transcription-text" id="transcription-text"></div>
+            </div>
+            
+            <div class="saved-transcriptions" id="saved-transcriptions">
+                <h2>Saved Transcriptions</h2>
+                <div class="transcriptions-list" id="transcriptions-list">
+                    <p class="loading-text">Loading saved transcriptions...</p>
+                </div>
             </div>
         </main>
         

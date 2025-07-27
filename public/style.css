@@ -1,14 +1,19 @@
+/* Import Inter font */
+@import url('https://rsms.me/inter/inter.css');
+
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 body {
-    background-color: #f8fafc; /* Lighter background */
-    color: #1e293b; /* Darker text for better contrast */
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: #0A0A0A;
+    min-height: 100vh;
+    color: #E5E7EB;
     line-height: 1.6;
+    font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
 }
 
 .container {
@@ -19,28 +24,38 @@ body {
 
 header {
     text-align: center;
-    margin-bottom: 2rem;
+    margin-bottom: 3rem;
 }
 
 header h1 {
-    color: #0f766e; /* Darker Teal for main header */
+    background: linear-gradient(135deg, #A855F7 0%, #EC4899 50%, #F97316 100%);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
     margin-bottom: 0.5rem;
-    font-size: 2.5rem;
+    font-size: 3rem;
+    font-weight: 700;
+    letter-spacing: -0.025em;
 }
 
 header h1 i {
-    color: #14b8a6; /* Brighter Teal for icon */
+    background: linear-gradient(135deg, #A855F7 0%, #EC4899 50%, #F97316 100%);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
 }
 
 header p {
-    color: #64748b;
+    color: #9CA3AF;
     font-size: 1.1rem;
+    max-width: 600px;
+    margin: 0 auto;
 }
 
 .version {
     display: inline-block;
-    background-color: #ccfbf1; /* Light Teal accent */
-    color: #115e59; /* Dark Teal text */
+    background: linear-gradient(135deg, #A855F7 0%, #EC4899 100%);
+    color: #FFFFFF;
     font-size: 0.8rem;
     font-weight: 600;
     padding: 0.25rem 0.75rem;
@@ -50,44 +65,49 @@ header p {
 }
 
 .upload-container {
-    border: 2px dashed #94a3b8; /* Softer border */
-    border-radius: 12px;
+    border: 2px dashed #374151;
+    border-radius: 16px;
     padding: 3rem 2rem;
     text-align: center;
     cursor: pointer;
-    background-color: #fff;
+    background-color: #111827;
     transition: all 0.3s ease;
     margin-bottom: 1.5rem;
+    backdrop-filter: blur(10px);
 }
 
 .upload-container:hover {
-    border-color: #14b8a6; /* Teal on hover */
-    background-color: #f8fafc;
+    border-color: #A855F7;
+    background-color: #1F2937;
+    box-shadow: 0 0 20px rgba(168, 85, 247, 0.1);
 }
 
 .upload-container.dragging {
-    background-color: #ccfbf1; /* Light Teal for dragging */
-    border-color: #14b8a6;
+    background-color: #1F2937;
+    border-color: #A855F7;
+    box-shadow: 0 0 30px rgba(168, 85, 247, 0.2);
 }
 
 .upload-instructions i {
     font-size: 4rem;
-    color: #94a3b8; /* Lighter icon color */
+    color: #6B7280;
     margin-bottom: 1rem;
-    transition: color 0.3s ease;
+    transition: all 0.3s ease;
 }
 
 .upload-container:hover .upload-instructions i {
-    color: #14b8a6; /* Teal icon on hover */
+    color: #A855F7;
+    transform: scale(1.1);
 }
 
 .upload-instructions h2 {
     margin-bottom: 0.5rem;
-    color: #1e293b;
+    color: #F9FAFB;
+    font-weight: 600;
 }
 
 .upload-instructions p {
-    color: #64748b;
+    color: #9CA3AF;
     margin-bottom: 0.5rem;
 }
 
@@ -98,22 +118,22 @@ header p {
 
 .file-size-info {
     font-size: 0.85rem;
-    color: #64748b;
+    color: #9CA3AF;
     margin-top: 0.5rem;
     padding: 0.4rem 0.8rem;
-    background-color: #f1f5f9;
-    border-radius: 4px;
-    border-left: 3px solid #2dd4bf; /* Teal accent border */
+    background-color: #1F2937;
+    border-radius: 8px;
+    border-left: 3px solid #A855F7;
 }
 
 .file-info {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    background-color: #fff;
+    background-color: #111827;
     padding: 1rem;
-    border-radius: 8px;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    border-radius: 12px;
+    border: 1px solid #374151;
     margin-bottom: 1.5rem;
 }
 
@@ -124,32 +144,37 @@ header p {
 
 #file-name {
     font-weight: 600;
-    color: #1e293b;
+    color: #F9FAFB;
 }
 
 #file-size {
     font-size: 0.85rem;
-    color: #64748b;
+    color: #9CA3AF;
 }
 
 button {
-    background-color: #14b8a6; /* Teal button */
+    background: linear-gradient(135deg, #A855F7 0%, #EC4899 100%);
     color: white;
     border: none;
     padding: 0.75rem 1.5rem;
-    border-radius: 6px;
+    border-radius: 12px;
     font-weight: 600;
     cursor: pointer;
-    transition: background-color 0.2s;
+    transition: all 0.3s ease;
+    font-size: 0.95rem;
+    letter-spacing: 0.025em;
 }
 
 button:hover {
-    background-color: #0d9488; /* Darker Teal on hover */
+    transform: translateY(-1px);
+    box-shadow: 0 10px 25px rgba(168, 85, 247, 0.3);
 }
 
 button:disabled {
-    background-color: #cbd5e1;
+    background: #374151;
     cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
 }
 
 .progress-container {
@@ -158,40 +183,44 @@ button:disabled {
 }
 
 .progress-bar-container {
-    height: 10px;
-    background-color: #e2e8f0;
-    border-radius: 5px;
+    height: 12px;
+    background-color: #1F2937;
+    border-radius: 8px;
     margin-bottom: 0.5rem;
     overflow: hidden;
+    border: 1px solid #374151;
 }
 
 .progress-bar {
     height: 100%;
     width: 0%;
-    background-color: #14b8a6; /* Teal progress bar */
-    border-radius: 5px;
+    background: linear-gradient(135deg, #A855F7 0%, #EC4899 100%);
+    border-radius: 8px;
     transition: width 0.3s ease;
+    box-shadow: 0 0 10px rgba(168, 85, 247, 0.3);
 }
 
 .status {
     font-size: 0.9rem;
-    color: #64748b;
+    color: #9CA3AF;
     text-align: center;
 }
 
 .result-container {
     display: none;
-    background-color: #fff;
-    border-radius: 12px;
+    background-color: #111827;
+    border-radius: 16px;
     padding: 1.5rem;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.07);
+    border: 1px solid #374151;
     margin-bottom: 1.5rem;
+    backdrop-filter: blur(10px);
 }
 
 .result-container h2 {
     margin-bottom: 1rem;
-    color: #1e293b;
+    color: #F9FAFB;
     text-align: center;
+    font-weight: 600;
 }
 
 .result-actions {
@@ -207,37 +236,41 @@ button:disabled {
     gap: 0.5rem;
     padding: 0.5rem 1rem;
     font-size: 0.9rem;
-    background-color: #f1f5f9; /* Lighter button for actions */
-    color: #334155;
+    background: #1F2937;
+    color: #E5E7EB;
+    border: 1px solid #374151;
 }
 
 .result-actions button:hover {
-    background-color: #e2e8f0;
+    background: #374151;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(168, 85, 247, 0.2);
 }
 
 .transcription-text {
-    background-color: #f8fafc;
+    background-color: #0F172A;
     padding: 1.5rem;
-    border-radius: 8px;
-    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    border: 1px solid #334155;
     white-space: pre-wrap;
     line-height: 1.8;
-    color: #334155;
+    color: #E2E8F0;
     max-height: 400px;
     overflow-y: auto;
+    font-family: 'Inter', monospace;
 }
 
 footer {
     text-align: center;
     padding: 15px;
     margin-top: 20px;
-    color: #94a3b8; /* Lighter footer text */
+    color: #6B7280;
     font-size: 0.8rem;
 }
 
 .version-footer {
     font-size: 0.75rem;
-    color: #94a3b8;
+    color: #6B7280;
     margin-top: 0.5rem;
     font-style: italic;
 }
@@ -247,21 +280,24 @@ footer {
     bottom: -100px;
     left: 50%;
     transform: translateX(-50%);
-    background-color: #22c55e; /* Fresh green for success */
+    background: linear-gradient(135deg, #10B981 0%, #059669 100%);
     color: white;
     padding: 1rem 2rem;
-    border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    border-radius: 12px;
+    box-shadow: 0 10px 25px rgba(16, 185, 129, 0.3);
     transition: bottom 0.3s ease;
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 1rem;
     z-index: 1000;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .notification.error {
-    background-color: #ef4444; /* Standard error red */
+    background: linear-gradient(135deg, #EF4444 0%, #DC2626 100%);
+    box-shadow: 0 10px 25px rgba(239, 68, 68, 0.3);
 }
 
 .notification.show {
@@ -295,4 +331,121 @@ footer {
     flex-direction: column;
     gap: 10px;
     z-index: 1000;
+}
+
+/* Saved Transcriptions Section */
+.saved-transcriptions {
+    background-color: #111827;
+    border-radius: 16px;
+    padding: 1.5rem;
+    border: 1px solid #374151;
+    margin-bottom: 1.5rem;
+    backdrop-filter: blur(10px);
+}
+
+.saved-transcriptions h2 {
+    margin-bottom: 1rem;
+    color: #F9FAFB;
+    text-align: center;
+    font-weight: 600;
+}
+
+.transcriptions-list {
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.transcription-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem;
+    border: 1px solid #374151;
+    border-radius: 12px;
+    margin-bottom: 0.5rem;
+    transition: all 0.2s;
+    background-color: #1F2937;
+}
+
+.transcription-item:hover {
+    background-color: #374151;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(168, 85, 247, 0.1);
+}
+
+.transcription-info {
+    flex-grow: 1;
+}
+
+.transcription-filename {
+    font-weight: 500;
+    color: #F9FAFB;
+    margin-bottom: 0.25rem;
+}
+
+.transcription-meta {
+    font-size: 0.875rem;
+    color: #9CA3AF;
+}
+
+.transcription-actions {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.transcription-btn {
+    padding: 0.375rem 0.75rem;
+    border: 1px solid #4B5563;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.875rem;
+    transition: all 0.2s;
+    background: #374151;
+    color: #E5E7EB;
+}
+
+.transcription-btn.view {
+    background: linear-gradient(135deg, #3B82F6 0%, #1D4ED8 100%);
+    color: white;
+    border-color: #3B82F6;
+}
+
+.transcription-btn.view:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+}
+
+.transcription-btn.download {
+    background: linear-gradient(135deg, #10B981 0%, #059669 100%);
+    color: white;
+    border-color: #10B981;
+}
+
+.transcription-btn.download:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+}
+
+.transcription-btn.download-docx {
+    background: linear-gradient(135deg, #2563EB 0%, #1E40AF 100%);
+    color: white;
+    border-color: #2563EB;
+}
+
+.transcription-btn.download-docx:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+}
+
+.loading-text {
+    text-align: center;
+    color: #9CA3AF;
+    font-style: italic;
+}
+
+.no-transcriptions {
+    text-align: center;
+    color: #64748b;
+    padding: 2rem;
+    font-style: italic;
 }

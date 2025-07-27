@@ -2,6 +2,9 @@ document.addEventListener('DOMContentLoaded', () => {
     // Fetch version information
     fetchVersionInfo();
     
+    // Load saved transcriptions
+    loadSavedTranscriptions();
+    
 
     // Elements
     const uploadArea = document.getElementById('upload-area');
@@ -16,11 +19,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const transcriptionText = document.getElementById('transcription-text');
     const copyBtn = document.getElementById('copy-btn');
     const downloadBtn = document.getElementById('download-btn');
+    const downloadWordBtn = document.getElementById('download-word-btn');
     const notification = document.getElementById('notification');
     const notificationMessage = document.getElementById('notification-message');
     const notificationClose = document.getElementById('notification-close');
 
     let selectedFile = null;
+    let currentTranscription = null;
+    let currentFilename = null;
 
     // Event listeners
     uploadArea.addEventListener('click', () => fileInput.click());
@@ -31,6 +37,7 @@ document.addEventListener('DOMContentLoaded', () => {
     uploadBtn.addEventListener('click', handleUpload);
     copyBtn.addEventListener('click', copyToClipboard);
     downloadBtn.addEventListener('click', downloadTranscription);
+    downloadWordBtn.addEventListener('click', downloadWordTranscription);
     notificationClose.addEventListener('click', dismissNotification);
 
     // Handle file selection
@@ -172,6 +179,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 // Show result
                 transcriptionText.textContent = transcription;
                 resultContainer.style.display = 'block';
+                
+                // Store current transcription data for Word download
+                currentTranscription = transcription;
+                currentFilename = selectedFile ? selectedFile.name : 'transcription';
+                
+                // Refresh saved transcriptions list
+                loadSavedTranscriptions();
             } else {
                 // Handle regular response for small files
                 // Complete progress
@@ -190,6 +204,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 
                 transcriptionText.textContent = data.transcription;
                 resultContainer.style.display = 'block';
+                
+                // Store current transcription data for Word download
+                currentTranscription = data.transcription;
+                currentFilename = selectedFile ? selectedFile.name : 'transcription';
+                
+                // Refresh saved transcriptions list
+                loadSavedTranscriptions();
             }
 
             // Reset after 2 seconds
@@ -309,6 +330,47 @@ document.addEventListener('DOMContentLoaded', () => {
         
         showNotification('Transcription downloaded!');
     }
+    
+    // Download Word transcription
+    async function downloadWordTranscription() {
+        if (!currentTranscription || !currentFilename) {
+            showNotification('No transcription available for download', true);
+            return;
+        }
+        
+        try {
+            // Create a temporary form data to send the transcription for Word conversion
+            const formData = new FormData();
+            formData.append('transcription', currentTranscription);
+            formData.append('filename', currentFilename);
+            
+            const response = await fetch('/api/generate-word', {
+                method: 'POST',
+                body: formData
+            });
+            
+            if (response.ok) {
+                const blob = await response.blob();
+                const url = URL.createObjectURL(blob);
+                
+                const a = document.createElement('a');
+                a.href = url;
+                const baseFilename = currentFilename.replace(/\.[^/.]+$/, '');
+                a.download = `${baseFilename}-${new Date().toISOString().split('T')[0]}.docx`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+                
+                showNotification('Word document downloaded!');
+            } else {
+                showNotification('Error generating Word document', true);
+            }
+        } catch (error) {
+            console.error('Error downloading Word document:', error);
+            showNotification('Error downloading Word document', true);
+        }
+    }
 
     // Show notification
     function showNotification(message, isError = false) {
@@ -344,4 +406,122 @@ document.addEventListener('DOMContentLoaded', () => {
             console.error('Error fetching version info:', error);
         }
     }
+    
+    // Function to load saved transcriptions
+    async function loadSavedTranscriptions() {
+        try {
+            const response = await fetch('/api/transcriptions');
+            const data = await response.json();
+            
+            const transcriptionsList = document.getElementById('transcriptions-list');
+            
+            if (data.success && data.transcriptions.length > 0) {
+                transcriptionsList.innerHTML = data.transcriptions.map(transcription => {
+                    const date = new Date(transcription.created).toLocaleDateString();
+                    const time = new Date(transcription.created).toLocaleTimeString();
+                    const size = formatFileSize(transcription.size);
+                    
+                    return `
+                        <div class="transcription-item">
+                            <div class="transcription-info">
+                                <div class="transcription-filename">${transcription.filename}</div>
+                                <div class="transcription-meta">${date} ${time} • ${size}</div>
+                            </div>
+                            <div class="transcription-actions">
+                                <button class="transcription-btn view" onclick="viewTranscription('${transcription.filename}')">
+                                    <i class="fas fa-eye"></i> View
+                                </button>
+                                <button class="transcription-btn download" onclick="downloadSavedTranscription('${transcription.filename}')">
+                                    <i class="fas fa-download"></i> TXT
+                                </button>
+                                ${transcription.hasDocx ? `
+                                    <button class="transcription-btn download-docx" onclick="downloadWordDocument('${transcription.baseFilename}')">
+                                        <i class="fas fa-file-word"></i> Word
+                                    </button>
+                                ` : ''}
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+            } else {
+                transcriptionsList.innerHTML = '<div class="no-transcriptions">No saved transcriptions found</div>';
+            }
+        } catch (error) {
+            console.error('Error loading saved transcriptions:', error);
+            document.getElementById('transcriptions-list').innerHTML = 
+                '<div class="no-transcriptions">Error loading transcriptions</div>';
+        }
+    }
+    
+    // Function to view a saved transcription
+    window.viewTranscription = async function(filename) {
+        try {
+            const response = await fetch(`/api/transcriptions/${filename}`);
+            const data = await response.json();
+            
+            if (data.success) {
+                // Display the transcription in the result container
+                transcriptionText.textContent = data.content;
+                resultContainer.style.display = 'block';
+                resultContainer.scrollIntoView({ behavior: 'smooth' });
+                showNotification(`Loaded transcription: ${filename}`);
+            } else {
+                showNotification('Error loading transcription', true);
+            }
+        } catch (error) {
+            console.error('Error viewing transcription:', error);
+            showNotification('Error loading transcription', true);
+        }
+    };
+    
+    // Function to download a saved transcription (TXT)
+    window.downloadSavedTranscription = async function(filename) {
+        try {
+            const response = await fetch(`/api/transcriptions/${filename}`);
+            const data = await response.json();
+            
+            if (data.success) {
+                const blob = new Blob([data.content], { type: 'text/plain' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = filename;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+                showNotification(`Downloaded: ${filename}`);
+            } else {
+                showNotification('Error downloading transcription', true);
+            }
+        } catch (error) {
+            console.error('Error downloading transcription:', error);
+            showNotification('Error downloading transcription', true);
+        }
+    };
+    
+    // Function to download Word document
+    window.downloadWordDocument = async function(baseFilename) {
+        try {
+            const response = await fetch(`/api/transcriptions/${baseFilename}/docx`);
+            
+            if (response.ok) {
+                const blob = await response.blob();
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `${baseFilename}.docx`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+                showNotification(`Downloaded Word document: ${baseFilename}.docx`);
+            } else {
+                showNotification('Error downloading Word document', true);
+            }
+        } catch (error) {
+            console.error('Error downloading Word document:', error);
+            showNotification('Error downloading Word document', true);
+        }
+    };
 });
