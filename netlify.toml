@@ -1,0 +1,25 @@
+# Note: This Audio Transcriber is a Node.js backend application
+# Netlify is designed for static sites and serverless functions
+# For full functionality, deploy to Railway instead
+
+[build]
+  # This won't work properly on Netlify due to Node.js backend requirements
+  command = "npm run build"
+  publish = "public"
+
+[build.environment]
+  NODE_VERSION = "18"
+
+# Redirect all requests to index.html for client-side routing
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
+# Note: The following features won't work on Netlify:
+# - File uploads and processing
+# - OpenAI API calls from backend
+# - Session-based authentication
+# - Persistent file storage
+# 
+# Recommended: Deploy to Railway for full functionality

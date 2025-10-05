@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Audio Transcriber</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="header-content">
+                <div class="header-left">
+                    <h1><i class="fas fa-headphones"></i> Audio Transcriber</h1>
+                    <p>Upload an audio file and get an accurate transcription using OpenAI's Whisper AI</p>
+                </div>
+                <div class="header-right">
+                    <button class="logout-btn" onclick="logout()" title="Logout">
+                        <i class="fas fa-sign-out-alt"></i>
+                    </button>
+                </div>
+            </div>
+        </header>
+        
+        <main>
+            <div class="upload-container" id="upload-area">
+                <div class="upload-instructions">
+                    <i class="fas fa-cloud-upload-alt"></i>
+                    <h2>Upload Audio File</h2>
+                    <p>Drag and drop your audio file here or click to browse</p>
+                    <p class="supported-formats">Supported formats: MP3, WAV, M4A, OGG, FLAC</p>
+                    <p class="file-size-info"><strong>Smart Processing:</strong> Files up to 300MB supported. Large files are intelligently chunked to ~20MB segments for optimal performance and rate limits.</p>
+                </div>
+                <input type="file" id="file-input" accept="audio/*" hidden>
+            </div>
+            
+            <div class="file-info" id="file-info">
+                <div class="file-details">
+                    <span id="file-name">No file selected</span>
+                    <span id="file-size"></span>
+                </div>
+                <button id="upload-btn" disabled>Transcribe</button>
+            </div>
+            
+            <div class="progress-container" id="progress-container">
+                <div class="progress-bar-container">
+                    <div class="progress-bar" id="progress-bar"></div>
+                </div>
+                <div class="status" id="status">Uploading and transcribing...</div>
+            </div>
+            
+            <div class="result-container" id="result-container">
+                <h2>Transcription Result</h2>
+                <div class="result-actions">
+                    <button id="copy-btn"><i class="fas fa-copy"></i> Copy</button>
+                    <button id="download-btn"><i class="fas fa-download"></i> TXT</button>
+                    <button id="download-word-btn"><i class="fas fa-file-word"></i> Word</button>
+                </div>
+                <div class="transcription-text" id="transcription-text"></div>
+            </div>
+            
+            <div class="saved-transcriptions" id="saved-transcriptions">
+                <h2>Saved Transcriptions</h2>
+                <div class="transcriptions-list" id="transcriptions-list">
+                    <p class="loading-text">Loading saved transcriptions...</p>
+                </div>
+            </div>
+            
+            <div class="console-container" id="console-container">
+                <div class="console-header">
+                    <h2><i class="fas fa-terminal"></i> Server Console</h2>
+                    <div class="console-controls">
+                        <button class="console-toggle-btn" id="console-toggle-btn" title="Minimize/Maximize">
+                            <i class="fas fa-chevron-down"></i>
+                        </button>
+                        <button class="console-clear-btn" id="console-clear-btn" title="Clear Console">
+                            <i class="fas fa-trash-alt"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="console-output" id="console-output">
+                    <div class="console-line console-info">[INFO] Waiting for server connection...</div>
+                </div>
+            </div>
+        </main>
+        
+        <footer>
+            <p>Powered by OpenAI's Whisper API</p>
+            <p class="version-footer" id="version-display">Loading version information...</p>
+        </footer>
+    </div>
+    
+    <div class="notification" id="notification">
+        <span id="notification-message"></span>
+        <button class="notification-close" id="notification-close">
+            <i class="fas fa-times"></i>
+        </button>
+    </div>
+    
+    <script src="script.js"></script>
+</body>
+</html>
