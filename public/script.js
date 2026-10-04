@@ -145,6 +145,7 @@ document.addEventListener('DOMContentLoaded', () => {
         resultContainer.style.display = 'none';
 
         const formData = new FormData();
+        formData.append('languageMode', document.getElementById('language-mode').value);
         formData.append('audio', selectedFile);
 
         try {

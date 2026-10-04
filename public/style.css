@@ -181,6 +181,27 @@ header p {
     margin-bottom: 1.5rem;
 }
 
+.language-select {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    margin: 0 1rem;
+}
+
+.language-select label {
+    font-size: 0.75rem;
+    color: #9ca3af;
+}
+
+.language-select select {
+    background-color: #1f2937;
+    color: #f9fafb;
+    border: 1px solid #374151;
+    border-radius: 8px;
+    padding: 0.5rem 0.75rem;
+    font-size: 0.9rem;
+}
+
 .file-details {
     display: flex;
     flex-direction: column;

@@ -265,12 +265,38 @@ function cleanupOldFiles() {
 setInterval(cleanupOldFiles, 60 * 60 * 1000);
 console.log('Periodic cleanup started (runs every hour)');
 
+// Language modes: 'de' / 'en' = transcribe in original language, 'translate-en' = translate to English
+const LANGUAGE_MODES = ['de', 'en', 'translate-en', 'translate-de'];
+
+// Whisper can only translate to English, so German translation = auto-detect transcription + GPT translation
+async function runWhisper(filePath, languageMode) {
+  const file = fs.createReadStream(filePath);
+  if (languageMode === 'translate-en') {
+    return openai.audio.translations.create({ file, model: "whisper-1" });
+  }
+  if (languageMode === 'translate-de') {
+    const original = await openai.audio.transcriptions.create({ file, model: "whisper-1" });
+    const completion = await openai.chat.completions.create({
+      model: "gpt-4o-mini",
+      messages: [
+        { role: "system", content: "Translate the user's text into German. If it is already German, return it unchanged. Output only the translated text, no comments." },
+        { role: "user", content: original.text }
+      ]
+    });
+    return { text: completion.choices[0].message.content.trim() };
+  }
+  return openai.audio.transcriptions.create({ file, model: "whisper-1", language: languageMode });
+}
+
 // Upload and transcribe route
 app.post('/transcribe', upload.single('audio'), async (req, res) => {
   if (!req.file) {
     return res.status(400).json({ error: 'No file uploaded' });
   }
-  
+
+  const languageMode = LANGUAGE_MODES.includes(req.body.languageMode) ? req.body.languageMode : 'de';
+  req.languageMode = languageMode;
+
   // If file exceeds OpenAI's limit, process it in chunks
   if (req.file.size > OPENAI_WHISPER_LIMIT) {
     console.log(`File size (${Math.round(req.file.size/MB)}MB) exceeds OpenAI's 25MB limit. Processing in chunks...`);
@@ -291,11 +317,7 @@ app.post('/transcribe', upload.single('audio'), async (req, res) => {
     
     // Transcribe using OpenAI Whisper API
     console.log('Sending request to OpenAI Whisper API...');
-    const transcription = await openai.audio.transcriptions.create({
-      file: fs.createReadStream(filePath),
-      model: "whisper-1",
-      language: "en",  // Force English transcription to prevent language detection anomalies
-    });
+    const transcription = await runWhisper(filePath, languageMode);
 
     console.log('Transcription successful!');
     
@@ -395,7 +417,7 @@ async function verifyAndResplitChunks(options) {
 }
 
 // Helper function to split large audio files and process chunks in parallel with optimized chunking
-async function splitAndProcessAudioFile(filePath, segmentDuration = null, res) {
+async function splitAndProcessAudioFile(filePath, segmentDuration = null, res, languageMode = 'de') {
   const sessionId = uuidv4();
   
   // Determine output format based on input file extension
@@ -536,11 +558,7 @@ async function splitAndProcessAudioFile(filePath, segmentDuration = null, res) {
           
           while (retryCount <= maxRetries) {
             try {
-              transcription = await openai.audio.transcriptions.create({
-                file: fs.createReadStream(chunkPath),
-                model: "whisper-1",
-                language: "en",  // Force English transcription for all chunks to maintain language consistency
-              });
+              transcription = await runWhisper(chunkPath, languageMode);
               break; // Success, exit retry loop
             } catch (apiError) {
               retryCount++;
@@ -688,7 +706,7 @@ async function handleLargeFile(req, res) {
     }));
     
     // Split the file into optimized chunks and begin processing them in parallel
-    const { sessionId, chunks, originalFilePath, combinedTranscription } = await splitAndProcessAudioFile(filePath, null, res);
+    const { sessionId, chunks, originalFilePath, combinedTranscription } = await splitAndProcessAudioFile(filePath, null, res, req.languageMode);
     
     res.write(JSON.stringify({
       status: 'processing',
